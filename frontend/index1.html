@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EduDub - Dubbing Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .controls { margin-top: 15px; }
+    audio, video { margin-top: 20px; display: block; }
+  </style>
+</head>
+<body>
+  <h1>EduDub - Real-time Dubbing</h1>
+
+  <form id="uploadForm">
+    <label>Upload Video:</label>
+    <input type="file" name="file" id="fileInput" accept="video/*" required><br><br>
+
+    <label>Select Language:</label>
+    <select name="lang" id="langSelect">
+      <option value="hi">Hindi</option>
+      <option value="es">Spanish</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+    </select><br><br>
+
+    <div class="controls">
+      <button type="button" onclick="previewAudio()">Preview Voice</button>
+      <button type="button" onclick="dubVideo()">Dub Video</button>
+    </div>
+  </form>
+
+  <h3>Preview Audio:</h3>
+  <audio id="previewPlayer" controls></audio>
+
+  <h3>Dubbed Video:</h3>
+  <video id="dubPlayer" controls width="640"></video>
+
+  <script>
+    async function previewAudio() {
+      const form = new FormData();
+      form.append("file", document.getElementById("fileInput").files[0]);
+      form.append("lang", document.getElementById("langSelect").value);
+
+      const res = await fetch("/preview", { method: "POST", body: form });
+      if (!res.ok) {
+        alert("Preview failed!");
+        return;
+      }
+      const blob = await res.blob();
+      document.getElementById("previewPlayer").src = URL.createObjectURL(blob);
+    }
+
+    async function dubVideo() {
+      const form = new FormData();
+      form.append("file", document.getElementById("fileInput").files[0]);
+      form.append("lang", document.getElementById("langSelect").value);
+
+      const res = await fetch("/dub", { method: "POST", body: form });
+      if (!res.ok) {
+        alert("Dub failed!");
+        return;
+      }
+      const blob = await res.blob();
+      document.getElementById("dubPlayer").src = URL.createObjectURL(blob);
+    }
+  </script>
+</body>
+</html>
