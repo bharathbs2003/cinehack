@@ -49,3 +49,6 @@ env/
 # Others
 *.iml
 *.class
+
+*.mp3
+*.mp4
