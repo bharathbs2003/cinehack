@@ -62,7 +62,7 @@ def process_dubbing(job_id, video_path, lang):
     try:
         JOBS[job_id]["status"] = "processing"
 
-        # 1️⃣ Transcribe
+        #  Transcribe
         segs = transcribe_audio(video_path)
         if not segs or not any(s["text"].strip() for s in segs):
             JOBS[job_id]["status"] = "error"
@@ -70,34 +70,34 @@ def process_dubbing(job_id, video_path, lang):
             return
         text = " ".join([s["text"] for s in segs])
 
-        # 2️⃣ Translate
+        #  Translate
         translated = translate_text(text, lang)
 
-        # 3️⃣ Gender detection
+        #  Gender detection
         frames = extract_frames(video_path, [1.0, 3.0, 5.0])
         genders = [normalize_gender(guess_gender_from_frame(f)) for f in frames if f]
         genders = [g for g in genders if g != "unknown"]
         gender = max(set(genders), key=genders.count) if genders else "male"
-        print("🎯 Detected gender:", gender)
+        print(" Detected gender:", gender)
 
-        # 4️⃣ Voice selection
+        #  Voice selection
         voices = murf.list_voices()
         voice_id = pick_voice_by_gender(voices, gender)
-        print("🎤 Selected voice:", voice_id)
+        print(" Selected voice:", voice_id)
 
-        # 5️⃣ TTS generation
+        #  TTS generation
         audio_output = f"audio_{job_id}.mp3"
         murf.generate_voice(translated, voice_id, output_file=audio_output)
 
-        # 6️⃣ Merge audio + video
+        #  Merge audio + video
         out_path = f"dubbed_{job_id}.mp4"
         merge_audio_to_video(video_path, audio_output, out_path)
 
-        # 7️⃣ Update job
+        #  Update job
         JOBS[job_id]["status"] = "done"
         JOBS[job_id]["result"] = out_path
 
-        # 8️⃣ Cleanup temp audio/video
+        #  Cleanup temp audio/video
         os.remove(video_path)
         if os.path.exists(audio_output):
             os.remove(audio_output)
@@ -105,12 +105,12 @@ def process_dubbing(job_id, video_path, lang):
     except Exception as e:
         JOBS[job_id]["status"] = "error"
         JOBS[job_id]["error"] = str(e)
-        print("❌ Dubbing error:", e)
+        print(" Dubbing error:", e)
 
 
 @app.get("/")
 async def root():
-    return {"message": "EduDub backend is running 🚀"}
+    return {"message": "EduDub backend is running "}
 
 
 @app.post("/dub")

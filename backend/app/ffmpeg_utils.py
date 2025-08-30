@@ -19,7 +19,7 @@ def merge_audio_to_video(video_path: str, audio_path: str, output_path: str):
             output_path,
         ]
         subprocess.run(cmd, check=True)
-        print("✅ FFmpeg merged audio + video:", output_path)
+        print(" FFmpeg merged audio + video:", output_path)
     except Exception as e:
-        print("❌ FFmpeg merge error:", e)
+        print(" FFmpeg merge error:", e)
         raise
