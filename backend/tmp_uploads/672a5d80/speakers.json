@@ -1,0 +1,12 @@
+{
+  "speaker_genders": {
+    "SPEAKER_00": "male"
+  },
+  "speaker_voices": {
+    "SPEAKER_00": {
+      "name": "Arjun",
+      "voiceId": "en-IN-arjun",
+      "gender": "male"
+    }
+  }
+}

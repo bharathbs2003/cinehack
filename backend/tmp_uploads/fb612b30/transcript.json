@@ -1,0 +1,30 @@
+{
+  "text": " Hello everyone, we are at Hack with Cindy Hack. Hack? We are in FizzHack. Right now it's 7.30. Akash, what do you want to say? Hi, I am a hacker.",
+  "segments": [
+    {
+      "start": 0,
+      "end": 5,
+      "text": " Hello everyone, we are at Hack with Cindy Hack.",
+      "words": []
+    },
+    {
+      "start": 5,
+      "end": 9,
+      "text": " Hack? We are in FizzHack. Right now it's 7.30.",
+      "words": []
+    },
+    {
+      "start": 9,
+      "end": 11,
+      "text": " Akash, what do you want to say?",
+      "words": []
+    },
+    {
+      "start": 11,
+      "end": 13,
+      "text": " Hi, I am a hacker.",
+      "words": []
+    }
+  ],
+  "words": []
+}

@@ -1,0 +1,37 @@
+# EduDub AI - Python 3.13 Compatible Requirements
+# Cloud-based version using APIs
+
+# Core Framework
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+pydantic-settings
+
+# Async Task Queue
+celery[redis]
+redis
+
+# API Clients
+requests
+websocket-client
+openai
+aiohttp
+
+# Audio/Video Processing
+ffmpeg-python
+pydub
+opencv-python
+numpy
+
+# Utilities
+pillow
+tqdm
+
+# Data Validation
+python-multipart
+
+# Testing
+pytest
+httpx
+

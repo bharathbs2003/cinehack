@@ -1,0 +1,115 @@
+version: "3.8"
+
+services:
+  # Redis for Celery broker and result backend
+  redis:
+    image: redis:7-alpine
+    container_name: edudub-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        ENABLE_GPU: "false" # Set to "true" for GPU support
+    container_name: edudub-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/tmp_uploads
+      - output_data:/app/output
+      - models_data:/app/models
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - MURF_API_KEY=${MURF_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+    depends_on:
+      - redis
+    restart: unless-stopped
+    # Uncomment for GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Celery worker for background tasks
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        ENABLE_GPU: "false"
+    container_name: edudub-celery-worker
+    command: celery -A app.celery_config:celery_app worker --loglevel=info --concurrency=2
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/tmp_uploads
+      - output_data:/app/output
+      - models_data:/app/models
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - MURF_API_KEY=${MURF_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # Celery beat for scheduled tasks (optional)
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: edudub-celery-beat
+    command: celery -A app.celery_config:celery_app beat --loglevel=info
+    volumes:
+      - ./backend:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # Frontend (optional - if serving from Docker)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: edudub-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  uploads_data:
+  output_data:
+  models_data:

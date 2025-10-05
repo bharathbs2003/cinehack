@@ -1,0 +1,57 @@
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-dotenv==1.0.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Async Task Queue
+celery[redis]==5.3.6
+redis==5.0.1
+
+# API Clients
+requests==2.31.0
+websocket-client==1.7.0
+openai>=1.0.0
+aiohttp>=3.9.0
+
+# Audio/Video Processing
+ffmpeg-python==0.2.0
+pydub==0.25.1
+opencv-python>=4.8.0
+numpy<2.0.0
+
+# Transcription & NLP (compatible versions)
+torch>=2.0.0
+torchaudio>=2.0.0
+transformers>=4.30.0
+sentencepiece>=0.1.99
+
+# Speaker Diarization (install separately due to dependencies)
+# pyannote.audio>=3.0.0
+# pyannote.core>=5.0.0
+
+# Emotion Detection (install separately)
+# speechbrain>=0.5.0
+
+# Translation
+sacremoses>=0.1.0
+
+# Utilities
+scipy>=1.10.0
+matplotlib>=3.7.0
+pillow>=10.0.0
+librosa>=0.10.0
+tqdm>=4.65.0
+
+# Data Validation
+python-multipart==0.0.6
+
+# DeepFace for gender detection
+deepface>=0.0.80
+
+# Testing (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+httpx>=0.26.0
+
